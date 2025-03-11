@@ -6,33 +6,31 @@
 
   <!-- 2) Include material macros (to avoid 'material ... undefined' warnings) -->
   <xacro:include filename="$(find xarm6_description)/urdf/common/common.material.xacro"/>
-  <!-- Provide a prefix so your table uses e.g. "table_White", "table_Silver", etc. -->
+  <!-- Provide a prefix so your table can use "table_White", etc. -->
   <xacro:common_material prefix="table_"/>
 
-  <!-- 3) Include the 'other_geometry' macro and instantiate a 1×1×0.1 box at the world -->
+  <!-- 3) Include the 'other_geometry' macro and create a 1×1×0.1 box at the world -->
   <xacro:include filename="$(find xarm6_description)/urdf/other/other_geometry.urdf.xacro"/>
   <xacro:other_geometry
       prefix="table_"
       attach_to="world"
-      attach_xyz="0 0 0" attach_rpy="0 0 0"
+      attach_xyz="0 0 0"
+      attach_rpy="0 0 0"
       geometry_type="box"
       geometry_length="1.0"
       geometry_width="1.0"
       geometry_height="0.1"
       geometry_mass="10.0"
   />
+  <!-- That macro automatically sets up:
+       table_other_geometry_link (the box),
+       table_other_geometry_fix (a fixed joint to 'world'),
+       table_link_tcp (a ‘tcp’ link above the box). -->
 
-  <!-- 
-    The table macro automatically creates:
-      • link = "table_other_geometry_link"
-      • joint = "table_other_geometry_fix" (fixed to 'world')
-      • another link named "table_link_tcp" (the “TCP” link for the geometry)
-  -->
-
-  <!-- 4) Include the xArm macro definition -->
+  <!-- 4) Include the standard xArm "device" macro definitions -->
   <xacro:include filename="$(find xarm6_description)/urdf/xarm_device_macro.xacro"/>
 
-  <!-- 5) Instantiate xArm6, attaching it to the table’s top link -->
+  <!-- 5) Instantiate a 6-DOF xArm on top of the table -->
   <xacro:xarm_device
       prefix=""
       dof="6"
@@ -41,7 +39,7 @@
       attach_to="table_link_tcp"
       attach_xyz="0 0 0.0"
       attach_rpy="0 0 0"
-      
+
       limited="true"
       add_gripper="false"
       add_vacuum_gripper="false"
